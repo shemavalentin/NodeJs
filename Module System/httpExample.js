@@ -34,7 +34,7 @@ const req = http.request("http://www.google.com", (res) => {
 });
 
 req.end();
-*/
+
 // ======================TO BE SECURE LET'S USE https =====================================
 
 const http = require("https");
@@ -53,8 +53,8 @@ const reqs = http.request("https://www.google.com", (res) => {
 req.end();
 
 // =============== DESTRICTURING http================
- 
-const {request} = require("https");
+
+const { request } = require("https");
 
 const reqst = request("https://www.google.com", (res) => {
   res.on("data", (chunk) => {
@@ -72,9 +72,9 @@ reqst.end();
 
 // ============= WE CAN ALSO MAKE REQUESTS USING GET METHOD ==========
 
-const {get} = require("https");
+const { get } = require("https");
 
- get ("https://www.google.com", (res) => {
+get("https://www.google.com", (res) => {
   res.on("data", (chunk) => {
     // Here EventEmitter in action
     console.log(`Data chunk: ${chunk}`);
@@ -88,5 +88,3 @@ const {get} = require("https");
 
 // reqs1.end();  No need to call end() function, it is called by the get method
 // when the request is done
-
-

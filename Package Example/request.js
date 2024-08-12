@@ -24,3 +24,10 @@ axios
 /* Now to get use of the short command when run the app, 
   we need to add in package.json the start command
    */
+
+// ======================
+// we can use nodemon package to restart the node when there is a change
+// It tracks changes in a node application.
+
+// to use it, we have to add a script in package.json
+// When using nodemon, it runs the automatically the codes and see the output
