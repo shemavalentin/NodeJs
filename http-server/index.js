@@ -129,6 +129,10 @@ server1.on("request", (req, res) => {
     // you might see the headers written like this: also it is used too
     res.statusCode = 200; // setting the status directly
     res.setHeader("Content-Type", "application/json");
+
+    if (items.length === 3) {
+    } else {
+    }
     res.end(
       JSON.stringify({
         id: 1,
