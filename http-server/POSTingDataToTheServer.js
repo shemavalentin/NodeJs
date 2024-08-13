@@ -75,6 +75,19 @@ server1.on("request", (req, res) => {
 });
          */
     });
+
+    // A PUZZLE NOW, HOW WOULD WE MAKE AN ENDPOINT THAT ECHOS BACK THE DATA
+    // THAT THE USER PASSED PASSED IN THE REQUEST BACK TO THEM EXACTLY AS
+    // THEY HAD PASSED IT. (So if we send the data for Albert Einstein in
+    // the POST request, the response to that request will be the exact same
+    // data about Einstein)
+
+    // ANS: We pass in some JSON data in the readable stream and then pipe into
+    // it into the writable stream, which is the response to send back that same
+    // JSON back to the browser.
+    // we can do this
+
+    req.pipe(res); // this is it. purposly put here afte processing the request
   }
 
   // GET Method
@@ -88,7 +101,7 @@ server1.on("request", (req, res) => {
 
       const friendIndex = Number(items[2]); // or use +
       // when the length is equal to 3, we are going to send the stringfied version
-      res.end(JSON.stringify(friends[friendIndex]));
+      res.end(JSON.stringify(friends[friendIndex])); // the end() function is not even needed because we are using pipe on the req. when the request finishes that's where the response will end.
     } else {
       res.end(JSON.stringify(friends));
     }
