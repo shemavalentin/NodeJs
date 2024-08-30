@@ -78,6 +78,11 @@ const express = require("express");
 
 const cluster = require("cluster");
 
+// Let's be clever enough to create forks, and automate it's creation
+// we use the os module in node
+
+const os = require("os");
+
 // As on windows the LibUV leaves the scheduling to the schedular founder in windows
 // and as this couse that windows does not follow the round robin approach to distribute
 // process, let's use another built in method to inforse use of round-robin in windows
@@ -128,8 +133,18 @@ console.log("Running server.js...");
 if (cluster.isMaster) {
   console.log("Master has been started...");
 
-  cluster.fork(); // each time we call this function from cluster module we create a work.
-  cluster.fork(); // We can write these functions many times as we want.
+  // cluster.fork(); // each time we call this function from cluster module we create a work.
+  // cluster.fork(); // We can write these functions many times as we want.
+
+  // LET'S CREATE WORKERS AUTOMATICALLY DEPENDING ON THE PYSICAL CORES ON OUR MACHINES
+  // AND THE LOGICAL CORES
+
+  // we use the built in os.cpus module
+  const NUM_WORKERS = os.cpus().length;
+  // creating the loop to create all workers using fork function
+  for (let i = 0; i < NUM_WORKERS; i++) {
+    cluster.fork();
+  }
 } else {
   // Anything that is written here is when the isMaster is false and then our
   // code is running as a work process.
