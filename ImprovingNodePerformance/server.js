@@ -1,3 +1,4 @@
+/*
 // creating a server
 const express = require("express");
 const PORT = 3000;
@@ -31,7 +32,7 @@ function delay(duration) {
  for very large arrays this is going to block
  [5, 1,2,3,4].sort()
 
-*/
+
 
 // Let's have two routes
 
@@ -66,3 +67,77 @@ JSON.stringify(obj1); // {"name": "Valentin","lastNane": "Shema'"}
 // NOW
 const jsonObj = JSON.stringify(obj1);
 JSON.parse(jsonObj);
+
+*/
+
+// ===== CRUSTERING TO INCREASE THE PERFORMANCE=========
+
+const express = require("express");
+
+// To use CLUSTER we need to import it
+
+const cluster = require("cluster");
+
+const PORT = 3000;
+
+const app = express();
+
+function delay(duration) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < duration) {}
+}
+
+// Let's have two routes
+
+app.get("/", (req, res) => {
+  // JSON.stringify({}) => "{}"
+  // JSON.parse("{}") => {}
+
+  // let's use the built in function process to get the process id from the operating system
+  // as every work will have it's own pid
+  res.send(`Performance example: ${process.pid}`);
+});
+
+// The second route
+
+app.get("/timer", (req, res) => {
+  delay(9000);
+  res.send(`Ding ding ding! ${process.pid}`);
+});
+
+// When we run for example node server.js, the master process is started and it's from
+// the master process we can call folk() function to create the two or more work process.
+// the number you call folk() function that's the number of cork processes is created.
+//The work processes that we fork run the same code that we have in server.js
+// the only way we differentiate our master process from the work processes is by
+// using the isMaster Boolean flag from the cluster module.
+
+// Now here we can write codes that only run when the first time the server.js is executed
+// as the master.
+
+// Now let's do it
+
+console.log("Running server.js...");
+
+if (cluster.isMaster) {
+  console.log("Master has been started...");
+
+  cluster.fork(); // each time we call this function from cluster module we create a work.
+  cluster.fork(); // We can write these functions many times as we want.
+} else {
+  // Anything that is written here is when the isMaster is false and then our
+  // code is running as a work process.
+
+  // It is only in the work that we listen for incoming HTTP requests and handle them
+  // using our Express routes.
+
+  // so we'll only call app.listen when we're running as a work process.
+
+  console.log("Work process started...");
+  app.listen(3000);
+
+  // IMPORTANT TO NOTE: the worker process run the same code as the server.js
+  // the only difference is the isMaster flag.
+}
+
+//app.listen(3000)
