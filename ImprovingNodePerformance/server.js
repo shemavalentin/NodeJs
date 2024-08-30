@@ -78,6 +78,12 @@ const express = require("express");
 
 const cluster = require("cluster");
 
+// As on windows the LibUV leaves the scheduling to the schedular founder in windows
+// and as this couse that windows does not follow the round robin approach to distribute
+// process, let's use another built in method to inforse use of round-robin in windows
+
+cluster.schedulingPolicy = cluster.SCHED_RR; // This will force Node to use Round Robin even on window
+
 const PORT = 3000;
 
 const app = express();
